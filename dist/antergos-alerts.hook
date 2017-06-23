@@ -1,0 +1,11 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = File
+Target = var/lib/antergos-alerts/alerts.json
+
+[Action]
+Description = Check for new antergos alerts.
+When = PostTransaction
+Depends = antergos-alerts
+Exec = /usr/bin/antergos-alerts
