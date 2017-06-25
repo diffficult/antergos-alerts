@@ -6,13 +6,16 @@ all: install
 
 install:
 	# Alerts Data
-	install -D dist/alerts.json $(DESTDIR)/var/lib/antergos-alerts/alerts.json
+	mkdir -p $(DESTDIR)/var/lib/antergos-alerts
+	cp dist/alerts.json $(DESTDIR)/var/lib/antergos-alerts
 
 	# ALPM Hook
-	install -D dist/antergos-alerts.hook $(DESTDIR)/usr/share/libalpm/hooks/antergos-alerts.hook
+	mkdir -p $(DESTDIR)/usr/share/libalpm/hooks
+	cp dist/antergos-alerts.hook $(DESTDIR)/usr/share/libalpm/hooks/antergos-alerts.hook
 
 	# Logo for desktop notification
-	install -D dist/logo-square32.png $(DESTDIR)/usr/share/antergos/logo-square32.png
+	mkdir -p $(DESTDIR)/usr/share/antergos
+	cp dist/logo-square32.png $(DESTDIR)/usr/share/antergos/new-logo-square32.png
 
 	# Antergos Alerts
 	install -Dm755 src/antergos-alerts.py $(DESTDIR)/usr/bin/antergos-alerts

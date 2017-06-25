@@ -38,6 +38,7 @@ LOCALE_DIR = '/usr/share/locale'
 
 DOING_INSTALL = os.environ.get('CNCHI_RUNNING', False)
 IS_GRAPHICAL_SESSION = os.environ.get('DISPLAY', False)
+HAS_GRAPHICAL_SESSION = os.path.exists('/usr/bin/X')
 
 ALERTS_DIR = '/var/lib/antergos-alerts'
 ALERTS_JSON = '/var/lib/antergos-alerts/alerts.json'
@@ -116,7 +117,7 @@ def do_alerts() -> None:
     subject, part1, part2, part3 = get_localized_alert_message()
 
     environment = os.environ.copy()
-    environment['ALERT SUBJECT'] = subject
+    environment['ALERT_SUBJECT'] = subject
     environment['ALERT_MESSAGE'] = f'{part1} {part2} {part3}'
 
     for alert_id in alerts_ids:
@@ -124,11 +125,11 @@ def do_alerts() -> None:
 
         print_notice_to_stdout(alert_slug)
 
-        if IS_GRAPHICAL_SESSION:
+        if IS_GRAPHICAL_SESSION or HAS_GRAPHICAL_SESSION:
             # Display desktop notification.
             environment['ALERT_URL'] = f'https://antergos.com/wiki/alerts/{alert_slug}'
             try:
-                subprocess.run(['./antergos-notify.sh'], env=environment, check=True)
+                subprocess.run(['/usr/bin/antergos-notify.sh'], env=environment, check=True)
             except subprocess.CalledProcessError:
                 pass
 

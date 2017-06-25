@@ -38,7 +38,7 @@ maybe_display_desktop_alert() {
 	for _i in $(seq 1 ${#_processes[@]}); do
 		_pid="${_processes[(_i - 1)]}"
 		_user="${_users[(_i - 1)]}"
-		_dbus="$(grep -z ${_addr} /proc/${_pid}/environ 2>/dev/null | tr '\0' '\n' | sed -e s/${_addr}=//;s/\n\n\n/\n\n/)"
+		_dbus="$(grep -z ${_addr} /proc/${_pid}/environ 2>/dev/null | tr '\0' '\n' | sed -e s/${_addr}=//)"
 
 		[[ -z "${_dbus}" ]] && continue
 
