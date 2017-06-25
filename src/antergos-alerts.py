@@ -45,13 +45,13 @@ COMPLETED_JSON = '/var/lib/antergos-alerts/completed.json'
 
 try:
     with open(ALERTS_JSON) as data:
-        ALERTS = json.loads(data)
+        ALERTS = json.loads(data.read())
 except (OSError, json.JSONDecodeError):
     ALERTS = {}
 
 try:
     with open(COMPLETED_JSON) as data:
-        COMPLETED_ALERT_IDS = json.loads(data)
+        COMPLETED_ALERT_IDS = json.loads(data.read())
 except (OSError, json.JSONDecodeError):
     COMPLETED_ALERT_IDS = []
 
