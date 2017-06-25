@@ -17,30 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with antergos-notify; if not, see <http://www.gnu.org/licenses/>.
 
-export TEXTDOMAIN="ANTERGOS_NOTIFY"
-export GETTEXT='gettext "ANTERGOS_NOTIFY"'
-
-# ===>>> BEGIN Translatable Strings <<<=== #
-
-# Notification Subject
-_subject=$(${GETTEXT} 'ATTENTION: Antergos System Message')
-
-# Notification Body Part 1
-_part1=$(${GETTEXT} 'A new Antergos Alert has been issued.')
-
-# Notification Body Part 2
-_part2=$(${GETTEXT} 'Alerts contain important information regarding your installed system.')
-
-# Notification Body Part 3
-_part3=$(${GETTEXT} 'You can view the alert at the following URL')
-
-# ===>>> END Translatable Strings <<<=== #
-
-_alert="/$1"
 #_view_message="$(python -c "import html;print(html.escape(\"${_part3}\"))")"
 #_view_message_link="<a href=\"https://antergos.com/wiki/alerts${_alert}\">${_view_message}</a>"
-_view_message_link="https://antergos.com/wiki/alerts${_alert}"
-_msg="${_part1} ${_part2} ${_part3}:\n\n${_view_message_link}\n"
+_msg="${ALERT_MESSAGE}:\n\n${ALERT_URL}\n"
 
 
 maybe_display_desktop_alert() {
@@ -50,7 +29,7 @@ maybe_display_desktop_alert() {
 	fi
 
 	_icon='/usr/share/antergos/logo-square32.png'
-	_command="/usr/bin/notify-send -u critical -a Antergos -i ${_icon} \"${_subject}\" \"${_msg}\""
+	_command="/usr/bin/notify-send -u critical -a Antergos -i ${_icon} \"${ALERT_SUBJECT}\" \"${_msg}\""
 	_addr='DBUS_SESSION_BUS_ADDRESS'
 
 	_processes=($(ps aux | grep '[d]bus-daemon --session' | awk '{print $2}' | xargs))

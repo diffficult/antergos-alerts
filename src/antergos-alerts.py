@@ -36,11 +36,27 @@ from termcolor import colored, cprint
 APP_NAME = 'ANTERGOS_NOTIFY'
 LOCALE_DIR = '/usr/share/locale'
 
-data = open(os.path.normpath('../dist/alerts.json')).read()
-ALERTS = json.loads(data)
-ALERT_IDS = ALERTS.keys()
+DOING_INSTALL = os.environ.get('CNCHI_RUNNING', False)
+IS_GRAPHICAL_SESSION = os.environ.get('DISPLAY', False)
 
-COMPLETED_ALERT_IDS = []  #json.loads('/var/cache/antergos-alerts/completed.json')
+ALERTS_DIR = '/var/lib/antergos-alerts'
+ALERTS_JSON = '/var/lib/antergos-alerts/alerts.json'
+COMPLETED_JSON = '/var/lib/antergos-alerts/completed.json'
+
+try:
+    with open(ALERTS_JSON) as data:
+        ALERTS = json.loads(data)
+except (OSError, json.JSONDecodeError):
+    ALERTS = {}
+
+try:
+    with open(COMPLETED_JSON) as data:
+        COMPLETED_ALERT_IDS = json.loads(data)
+except (OSError, json.JSONDecodeError):
+    COMPLETED_ALERT_IDS = []
+
+
+ALERT_IDS = ALERTS.keys()
 
 
 def setup_gettext()-> None:
@@ -55,13 +71,20 @@ def setup_gettext()-> None:
         pass
 
 
-def print_notice_to_stdout(alert_slug: str) -> None:
-    prefix = colored('*', color='red', attrs=['bold', 'blink'])
+def get_localized_alert_message() -> tuple:
     subject = _('ATTENTION: Antergos System Message')
 
     part1 = _('A new Antergos Alert has been issued.')
     part2 = _('Alerts contain important information regarding your system.')
     part3 = _('You can view the alert at the following URL')
+
+    return subject, part1, part2, part3
+
+
+def print_notice_to_stdout(alert_slug: str) -> None:
+    prefix = colored('*', color='red', attrs=['bold', 'blink'])
+
+    subject, part1, part2, part3 = get_localized_alert_message()
 
     cprint(
         f'    =======>>> {subject} <<<=======    ',
@@ -84,25 +107,42 @@ def print_notice_to_stdout(alert_slug: str) -> None:
     )
 
 
-if __name__ == '__main__':
-    doing_install = os.environ.get('CNCHI_RUNNING', False)
-    is_graphical_session = os.environ.get('DISPLAY', False)
-
+def do_alerts() -> None:
     # Filter out completed alerts
-    ALERT_IDS = list(set(ALERT_IDS) - set(COMPLETED_ALERT_IDS))
-    # Sort by date
-    ALERT_IDS.sort()
+    alerts_ids = list(set(ALERT_IDS) - set(COMPLETED_ALERT_IDS))
 
-    setup_gettext()
+    alerts_ids.sort()
 
-    for alert_id in ALERT_IDS:
-        alert = ALERTS[alert_id]
+    subject, part1, part2, part3 = get_localized_alert_message()
 
-        print_notice_to_stdout(alert)
+    environment = os.environ.copy()
+    environment['ALERT SUBJECT'] = subject
+    environment['ALERT_MESSAGE'] = f'{part1} {part2} {part3}'
 
-        if is_graphical_session and not doing_install:
+    for alert_id in alerts_ids:
+        alert_slug = ALERTS[alert_id]
+
+        print_notice_to_stdout(alert_slug)
+
+        if IS_GRAPHICAL_SESSION:
             # Display desktop notification.
+            environment['ALERT_URL'] = f'https://antergos.com/wiki/alerts/{alert_slug}'
             try:
-                subprocess.check_call(['./antergos-notify.sh', alert])
+                subprocess.run(['./antergos-notify.sh'], env=environment, check=True)
             except subprocess.CalledProcessError:
                 pass
+
+        COMPLETED_ALERT_IDS.append(alert_id)
+
+
+if __name__ == '__main__':
+    if DOING_INSTALL:
+        sys.exit(0)
+
+    setup_gettext()
+    do_alerts()
+
+    with open(COMPLETED_JSON, 'w') as data:
+        data.write(json.dumps(COMPLETED_ALERT_IDS))
+
+    sys.exit(0)
