@@ -129,7 +129,7 @@ def do_alerts() -> None:
             # Display desktop notification.
             environment['ALERT_URL'] = f'https://antergos.com/wiki/alerts/{alert_slug}'
             try:
-                subprocess.run(['/usr/bin/antergos-notify.sh'], env=environment, check=True)
+                subprocess.run(['/usr/bin/antergos-notify'], env=environment, check=True)
             except subprocess.CalledProcessError:
                 pass
 
