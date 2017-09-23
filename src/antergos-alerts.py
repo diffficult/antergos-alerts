@@ -66,7 +66,8 @@ def setup_gettext()-> None:
 
     try:
         locale_code, encoding = locale.getdefaultlocale()
-        lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
+        lang = gettext.translation(APP_NAME, LOCALE_DIR, [
+                                   locale_code], None, True)
         lang.install()
     except Exception:
         pass
@@ -129,7 +130,8 @@ def do_alerts() -> None:
             # Display desktop notification.
             environment['ALERT_URL'] = f'https://antergos.com/wiki/alerts/{alert_slug}'
             try:
-                subprocess.run(['/usr/bin/antergos-notify'], env=environment, check=True)
+                subprocess.run(['/usr/bin/antergos-notify'],
+                               env=environment, check=True)
             except subprocess.CalledProcessError:
                 pass
 

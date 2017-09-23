@@ -23,27 +23,27 @@ _msg="${ALERT_MESSAGE}:\n\n${ALERT_URL}\n"
 
 
 maybe_display_desktop_alert() {
-	if [[ -e '/usr/bin/pacman-boot' ]]; then
-		# We're running on antergos-iso
-		return
-	fi
+    if [[ -e '/usr/bin/pacman-boot' ]]; then
+        # We're running on antergos-iso
+        return
+    fi
 
-	_icon='/usr/share/antergos/new-logo-square32.png'
-	_command="/usr/bin/notify-send -u critical -a Antergos -i ${_icon} \"${ALERT_SUBJECT}\" \"${_msg}\""
-	_addr='DBUS_SESSION_BUS_ADDRESS'
+    _icon='/usr/share/antergos/new-logo-square32.png'
+    _command="/usr/bin/notify-send -u critical -a Antergos -i ${_icon} \"${ALERT_SUBJECT}\" \"${_msg}\""
+    _addr='DBUS_SESSION_BUS_ADDRESS'
 
-	_processes=($(ps aux | grep '[d]bus-daemon --session' | awk '{print $2}' | xargs))
-	_users=($(ps aux | grep '[d]bus-daemon --session' | awk '{print $1}' | xargs))
+    _processes=($(ps aux | grep '[d]bus-daemon --session' | awk '{print $2}' | xargs))
+    _users=($(ps aux | grep '[d]bus-daemon --session' | awk '{print $1}' | xargs))
 
-	for _i in $(seq 1 ${#_processes[@]}); do
-		_pid="${_processes[(_i - 1)]}"
-		_user="${_users[(_i - 1)]}"
-		_dbus="$(grep -z ${_addr} /proc/${_pid}/environ 2>/dev/null | tr '\0' '\n' | sed -e s/${_addr}=//)"
+    for _i in $(seq 1 ${#_processes[@]}); do
+        _pid="${_processes[(_i - 1)]}"
+        _user="${_users[(_i - 1)]}"
+        _dbus="$(grep -z ${_addr} /proc/${_pid}/environ 2>/dev/null | tr '\0' '\n' | sed -e s/${_addr}=//)"
 
-		[[ -z "${_dbus}" ]] && continue
+        [[ -z "${_dbus}" ]] && continue
 
-		DBUS_SESSION_BUS_ADDRESS="${_dbus}" DISPLAY=":0" su "${_user}" -c "${_command}"
-	done
+        DBUS_SESSION_BUS_ADDRESS="${_dbus}" DISPLAY=":0" su "${_user}" -c "${_command}"
+    done
 }
 
 maybe_display_desktop_alert
