@@ -45,6 +45,12 @@ ALERTS_JSON = '/var/lib/antergos-alerts/alerts.json'
 COMPLETED_JSON = '/var/lib/antergos-alerts/completed.json'
 
 try:
+    result = subprocess.run(['uname', '-m'], universal_newlines=True, stdout=subprocess.PIPE)
+    IS_32BIT = 'x86_64' not in result.stdout
+except Exception:
+    IS_32BIT = False
+
+try:
     with open(ALERTS_JSON) as data:
         ALERTS = json.loads(data.read())
 except (OSError, json.JSONDecodeError):
@@ -61,10 +67,10 @@ ALERT_IDS = ALERTS.keys()
 
 
 def setup_gettext()-> None:
-    gettext.textdomain(APP_NAME)
-    gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
-
     try:
+        gettext.textdomain(APP_NAME)
+        gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
+
         locale_code, encoding = locale.getdefaultlocale()
         lang = gettext.translation(APP_NAME, LOCALE_DIR, [
                                    locale_code], None, True)
@@ -124,9 +130,13 @@ def do_alerts() -> None:
     for alert_id in alerts_ids:
         alert_slug = ALERTS[alert_id]
 
+        if 'i686' in alert_slug and not IS_32BIT:
+            COMPLETED_ALERT_IDS.append(alert_id)
+            continue
+
         print_notice_to_stdout(alert_slug)
 
-        if IS_GRAPHICAL_SESSION or HAS_GRAPHICAL_SESSION:
+        if IS_GRAPHICAL_SESSION:
             # Display desktop notification.
             environment['ALERT_URL'] = f'https://antergos.com/wiki/alerts/{alert_slug}'
             try:
