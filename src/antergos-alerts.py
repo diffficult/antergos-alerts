@@ -129,6 +129,10 @@ def do_alerts() -> None:
     for alert_id in alerts_ids:
         alert_slug = ALERTS[alert_id]
 
+        if DOING_INSTALL:
+            COMPLETED_ALERT_IDS.append(alert_id)
+            continue
+
         if 'i686' in alert_slug and not IS_32BIT:
             COMPLETED_ALERT_IDS.append(alert_id)
             continue
@@ -147,9 +151,6 @@ def do_alerts() -> None:
 
 
 if __name__ == '__main__':
-    if DOING_INSTALL:
-        sys.exit(0)
-
     setup_gettext()
     do_alerts()
 
