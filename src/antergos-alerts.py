@@ -79,6 +79,11 @@ def setup_gettext()-> None:
 
 
 def get_localized_alert_message() -> tuple:
+    try:
+        _()
+    except Exception:
+        _ = lambda x: x
+
     subject = _('ATTENTION: Antergos System Message')
 
     part1 = _('A new Antergos Alert has been issued.')
