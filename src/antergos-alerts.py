@@ -3,7 +3,7 @@
 #
 # antergos-alerts.py
 #
-# Copyright © 2017 Antergos
+# Copyright © 2017-2018 Antergos
 #
 # antergos-alerts.py is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,140 +26,157 @@
 
 import json
 import os
-import sys
 import subprocess
 import gettext
 import locale
 from termcolor import colored, cprint
 
 
-APP_NAME = 'ANTERGOS_NOTIFY'
-LOCALE_DIR = '/usr/share/locale'
+class AntergosAlerts(object):
+    """ Manages antergos alerts """
+    APP_NAME = 'ANTERGOS_NOTIFY'
+    LOCALE_DIR = '/usr/share/locale'
 
-DOING_INSTALL = os.environ.get('CNCHI_RUNNING', False)
-IS_GRAPHICAL_SESSION = os.environ.get('DISPLAY', False)
-HAS_GRAPHICAL_SESSION = os.path.exists('/usr/bin/X')
+    DOING_INSTALL = os.environ.get('CNCHI_RUNNING', False)
+    IS_GRAPHICAL_SESSION = os.environ.get('DISPLAY', False)
+    HAS_GRAPHICAL_SESSION = os.path.exists('/usr/bin/X')
 
-ALERTS_DIR = '/var/lib/antergos-alerts'
-ALERTS_JSON = '/var/lib/antergos-alerts/alerts.json'
-COMPLETED_JSON = '/var/lib/antergos-alerts/completed.json'
+    ALERTS_DIR = '/var/lib/antergos-alerts'
+    ALERTS_JSON = '/var/lib/antergos-alerts/alerts.json'
+    COMPLETED_JSON = '/var/lib/antergos-alerts/completed.json'
 
-try:
-    result = subprocess.run(['uname', '-m'], universal_newlines=True, stdout=subprocess.PIPE)
-    IS_32BIT = 'x86_64' not in result.stdout
-except Exception:
-    IS_32BIT = False
+    def __init__(self):
+        """ Initialization """
+        try:
+            result = subprocess.run(
+                ['uname', '-m'], universal_newlines=True, stdout=subprocess.PIPE)
+            self.is_32bit = 'x86_64' not in result.stdout
+        except (OSError, subprocess.CalledProcessError) as _err:
+            self.is_32bit = False
 
-try:
-    with open(ALERTS_JSON) as data:
-        ALERTS = json.loads(data.read())
-except (OSError, json.JSONDecodeError):
-    ALERTS = {}
+        try:
+            with open(AntergosAlerts.ALERTS_JSON) as data:
+                self.alerts = json.loads(data.read())
+        except (OSError, json.JSONDecodeError):
+            self.alerts = {}
 
-try:
-    with open(COMPLETED_JSON) as data:
-        COMPLETED_ALERT_IDS = json.loads(data.read())
-except (OSError, json.JSONDecodeError):
-    COMPLETED_ALERT_IDS = []
+        try:
+            with open(AntergosAlerts.COMPLETED_JSON) as data:
+                self.completed_alert_ids = json.loads(data.read())
+        except (OSError, json.JSONDecodeError):
+            self.completed_alert_ids = []
 
+        self.alert_ids = self.alerts.keys()
 
-ALERT_IDS = ALERTS.keys()
+    def run(self):
+        """ Runs program """
+        self.setup_gettext()
+        self.do_alerts()
+        self.save_completed_alerts()
 
+    @staticmethod
+    def setup_gettext()-> None:
+        """ Initialize gettext for string translations """
+        try:
+            gettext.textdomain(AntergosAlerts.APP_NAME)
+            gettext.bindtextdomain(
+                AntergosAlerts.APP_NAME, AntergosAlerts.LOCALE_DIR)
 
-def setup_gettext()-> None:
-    try:
-        gettext.textdomain(APP_NAME)
-        gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
+            locale_code, _encoding = locale.getdefaultlocale()
+            lang = gettext.translation(AntergosAlerts.APP_NAME, AntergosAlerts.LOCALE_DIR, [
+                                       locale_code], None, True)
+            lang.install()
+        except Exception:
+            pass
 
-        locale_code, encoding = locale.getdefaultlocale()
-        lang = gettext.translation(APP_NAME, LOCALE_DIR, [locale_code], None, True)
-        lang.install()
-    except Exception:
-        pass
+    @staticmethod
+    def get_localized_alert_message() -> tuple:
+        """ Obtain localized version of a generic alert message """
+        try:
+            _()
+        except NameError:
+            _ = lambda message: message
 
+        subject = _('ATTENTION: Antergos System Message')
 
-def get_localized_alert_message() -> tuple:
-    try:
-        _()
-    except Exception:
-        _ = lambda x: x
+        part1 = _('A new Antergos Alert has been issued.')
+        part2 = _('Alerts contain important information regarding your system.')
+        part3 = _('You can view the alert at the following URL')
 
-    subject = _('ATTENTION: Antergos System Message')
-
-    part1 = _('A new Antergos Alert has been issued.')
-    part2 = _('Alerts contain important information regarding your system.')
-    part3 = _('You can view the alert at the following URL')
-
-    return subject, part1, part2, part3
-
-
-def print_notice_to_stdout(alert_slug: str) -> None:
-    prefix = colored('*', color='red', attrs=['bold', 'blink'])
-
-    subject, part1, part2, part3 = get_localized_alert_message()
-
-    cprint(
-        f'    =======>>> {subject} <<<=======    ',
-        color='white',
-        on_color='on_red',
-        attrs=['bold', 'blink']
-    )
-    print('')
-    print(f'{prefix} {part1}')
-    print(f'{prefix} {part2}')
-    print(f'{prefix} {part3}:')
-    print('')
-    print(f'{prefix} https://antergos.com/wiki/alerts/{alert_slug}')
-    print('')
-    cprint(
-        '                                                                 ',
-        color='white',
-        on_color='on_red',
-        attrs=['bold', 'blink']
-    )
+        return subject, part1, part2, part3
 
 
-def do_alerts() -> None:
-    # Filter out completed alerts
-    alerts_ids = list(set(ALERT_IDS) - set(COMPLETED_ALERT_IDS))
+    def print_notice_to_stdout(self, alert_slug: str) -> None:
+        """ Show alert to the user (stdout) """
+        prefix = colored('*', color='red', attrs=['bold', 'blink'])
 
-    alerts_ids.sort()
+        subject, part1, part2, part3 = self.get_localized_alert_message()
 
-    subject, part1, part2, part3 = get_localized_alert_message()
+        cprint(
+            f'    =======>>> {subject} <<<=======    ',
+            color='white',
+            on_color='on_red',
+            attrs=['bold', 'blink']
+        )
+        print('')
+        print(f'{prefix} {part1}')
+        print(f'{prefix} {part2}')
+        print(f'{prefix} {part3}:')
+        print('')
+        print(f'{prefix} https://antergos.com/wiki/alerts/{alert_slug}')
+        print('')
+        cprint(
+            '                                                                 ',
+            color='white',
+            on_color='on_red',
+            attrs=['bold', 'blink']
+        )
 
-    environment = os.environ.copy()
-    environment['ALERT_SUBJECT'] = subject
-    environment['ALERT_MESSAGE'] = f'{part1} {part2} {part3}'
 
-    for alert_id in alerts_ids:
-        alert_slug = ALERTS[alert_id]
+    def do_alerts(self) -> None:
+        """ Show alerts to user (stdout and notify) """
+        # Filter out completed alerts
+        alerts_ids = list(set(self.alert_ids) - set(self.completed_alert_ids))
 
-        if DOING_INSTALL:
-            COMPLETED_ALERT_IDS.append(alert_id)
-            continue
+        alerts_ids.sort()
 
-        if 'i686' in alert_slug and not IS_32BIT:
-            COMPLETED_ALERT_IDS.append(alert_id)
-            continue
+        subject, part1, part2, part3 = self.get_localized_alert_message()
 
-        print_notice_to_stdout(alert_slug)
+        environment = os.environ.copy()
+        environment['ALERT_SUBJECT'] = subject
+        environment['ALERT_MESSAGE'] = f'{part1} {part2} {part3}'
 
-        if IS_GRAPHICAL_SESSION:
-            # Display desktop notification.
-            environment['ALERT_URL'] = f'https://antergos.com/wiki/alerts/{alert_slug}'
-            try:
-                subprocess.run(['/usr/bin/antergos-notify'], env=environment, check=True)
-            except subprocess.CalledProcessError:
-                pass
+        for alert_id in alerts_ids:
+            alert_slug = self.alerts[alert_id]
 
-        COMPLETED_ALERT_IDS.append(alert_id)
+            if AntergosAlerts.DOING_INSTALL:
+                self.completed_alert_ids.append(alert_id)
+                continue
+
+            if 'i686' in alert_slug and not self.is_32bit:
+                self.completed_alert_ids.append(alert_id)
+                continue
+
+            self.print_notice_to_stdout(alert_slug)
+
+            if AntergosAlerts.IS_GRAPHICAL_SESSION:
+                # Display desktop notification.
+                environment['ALERT_URL'] = f'https://antergos.com/wiki/alerts/{alert_slug}'
+                try:
+                    subprocess.run(['/usr/bin/antergos-notify'], env=environment, check=True)
+                except subprocess.CalledProcessError:
+                    pass
+
+            self.completed_alert_ids.append(alert_id)
+
+    def save_completed_alerts(self):
+        """ Store already shown alerts """
+        try:
+            with open(AntergosAlerts.COMPLETED_JSON, 'w') as json_data:
+                json_data.write(json.dumps(self.completed_alert_ids))
+        except PermissionError as _err:
+            print(_("root privileges are needed to store which alerts have already been shown"))
 
 
 if __name__ == '__main__':
-    setup_gettext()
-    do_alerts()
-
-    with open(COMPLETED_JSON, 'w') as data:
-        data.write(json.dumps(COMPLETED_ALERT_IDS))
-
-    sys.exit(0)
+    AntergosAlerts().run()
