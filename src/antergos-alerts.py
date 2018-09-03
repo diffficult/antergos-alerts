@@ -71,20 +71,22 @@ class AntergosAlerts(object):
     def run(self):
         """ Runs program """
         self.setup_gettext()
-        self.do_alerts()
-        self.save_completed_alerts()
+
+        if os.environ.get('RECOMMEND_REBOOT', False):
+            self.maybe_recommend_reboot()
+        else:
+            self.do_alerts()
+            self.save_completed_alerts()
 
     @staticmethod
     def setup_gettext()-> None:
         """ Initialize gettext for string translations """
         try:
             gettext.textdomain(AntergosAlerts.APP_NAME)
-            gettext.bindtextdomain(
-                AntergosAlerts.APP_NAME, AntergosAlerts.LOCALE_DIR)
+            gettext.bindtextdomain(AntergosAlerts.APP_NAME, AntergosAlerts.LOCALE_DIR)
 
             locale_code, _encoding = locale.getdefaultlocale()
-            lang = gettext.translation(AntergosAlerts.APP_NAME, AntergosAlerts.LOCALE_DIR, [
-                                       locale_code], None, True)
+            lang = gettext.translation(AntergosAlerts.APP_NAME, AntergosAlerts.LOCALE_DIR, [locale_code], None, True)
             lang.install()
         except Exception:
             pass
@@ -105,6 +107,38 @@ class AntergosAlerts(object):
 
         return subject, part1, part2, part3
 
+    @classmethod
+    def get_localized_reboot_recommended_message(cls) -> tuple:
+        """ Obtain localized version of system reboot recommended message """
+        try:
+            _()
+        except NameError:
+            _ = lambda message: message
+
+        generic_msg_parts = cls.get_localized_alert_message()
+        subject = generic_msg_parts[0]
+
+        part1 = _('At least one core system package has been updated.')
+        part2 = _('To ensure system stability, a reboot is recommended.')
+
+        return subject, part1, part2
+
+    @classmethod
+    def maybe_recommend_reboot(cls) -> None:
+        if cls.DOING_INSTALL or not cls.IS_GRAPHICAL_SESSION:
+            return
+
+        subject, part1, part2 = cls.get_localized_reboot_recommended_message()
+
+        environment = os.environ.copy()
+        environment['ALERT_SUBJECT'] = subject
+        environment['ALERT_MESSAGE'] = f'{part1} {part2}'
+
+        # Display desktop notification.
+        try:
+            subprocess.run(['/usr/bin/antergos-notify'], env=environment, check=True)
+        except subprocess.CalledProcessError:
+            pass
 
     def print_notice_to_stdout(self, alert_slug: str) -> None:
         """ Show alert to the user (stdout) """
@@ -131,7 +165,6 @@ class AntergosAlerts(object):
             on_color='on_red',
             attrs=['bold', 'blink']
         )
-
 
     def do_alerts(self) -> None:
         """ Show alerts to user (stdout and notify) """

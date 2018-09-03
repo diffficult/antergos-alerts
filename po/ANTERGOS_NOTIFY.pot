@@ -1,0 +1,49 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Antergos Alerts\n"
+"POT-Creation-Date: 2018-09-03 02:14-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Antergos Developers <dev@antergos.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"X-Generator: Poedit 2.1.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: ../src\n"
+"X-Poedit-KeywordsList: _\n"
+"X-Poedit-SearchPath-0: antergos-alerts.py\n"
+
+#: antergos-alerts.py:102
+msgid "ATTENTION: Antergos System Message"
+msgstr ""
+
+#: antergos-alerts.py:104
+msgid "A new Antergos Alert has been issued."
+msgstr ""
+
+#: antergos-alerts.py:105
+msgid "Alerts contain important information regarding your system."
+msgstr ""
+
+#: antergos-alerts.py:106
+msgid "You can view the alert at the following URL"
+msgstr ""
+
+#: antergos-alerts.py:121
+msgid "At least one core system package has been updated."
+msgstr ""
+
+#: antergos-alerts.py:122
+msgid "To ensure system stability, a reboot is recommended."
+msgstr ""
+
+#: antergos-alerts.py:211
+msgid "root privileges are needed to store which alerts have already been shown"
+msgstr ""

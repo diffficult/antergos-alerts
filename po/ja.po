@@ -1,0 +1,42 @@
+# 
+# Translators:
+# Jun Kasamatsu (もっへもへ) <mohemohe@ghippos.net>, 2016
+# Jun Kasamatsu (もっへもへ) <mohemohe@ghippos.net>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Antergos\n"
+"Report-Msgid-Bugs-To: Antergos Developers <dev@antergos.com>\n"
+"POT-Creation-Date: 2016-05-30 13:10-0500\n"
+"PO-Revision-Date: 2017-09-22 23:48+0000\n"
+"Last-Translator: Jun Kasamatsu (もっへもへ) <mohemohe@ghippos.net>\n"
+"Language-Team: Japanese (http://www.transifex.com/faidoc/antergos/language/ja/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Notification Body Part 1
+#: antergos-notify.sh:27
+msgid "The antergos repo priority has been updated."
+msgstr "Antergos リポジトリの優先度がアップデートされました。"
+
+#. Notification Body Part 2
+#: antergos-notify.sh:30
+msgid "You should review the change in /etc/pacman.conf.pacnew"
+msgstr "/etc/pacman.conf.pacnew で変更を確認する必要があります"
+
+#. Notification Body Part 3
+#: antergos-notify.sh:33
+msgid "and then update your pacman.conf accordingly."
+msgstr "また、正しく pacman.conf を編集してください。"
+
+#. Notification Body Part 4
+#: antergos-notify.sh:36
+msgid "For more information see:"
+msgstr "詳しい情報は次を確認してください:"
+
+#. Notification Subject
+#: antergos-notify.sh:39
+msgid "\"ATTENTION: Antergos System Message\""
+msgstr "\"注意: Antergos システム メッセージ\""

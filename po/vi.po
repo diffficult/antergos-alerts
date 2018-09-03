@@ -1,0 +1,41 @@
+# 
+# Translators:
+# Huy Dang <dqh.dhtb@gmail.com>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Antergos\n"
+"Report-Msgid-Bugs-To: Antergos Developers <dev@antergos.com>\n"
+"POT-Creation-Date: 2016-05-30 13:10-0500\n"
+"PO-Revision-Date: 2017-09-22 23:48+0000\n"
+"Last-Translator: Huy Dang <dqh.dhtb@gmail.com>\n"
+"Language-Team: Vietnamese (http://www.transifex.com/faidoc/antergos/language/vi/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: vi\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Notification Body Part 1
+#: antergos-notify.sh:27
+msgid "The antergos repo priority has been updated."
+msgstr ""
+
+#. Notification Body Part 2
+#: antergos-notify.sh:30
+msgid "You should review the change in /etc/pacman.conf.pacnew"
+msgstr "Bạn nên xem xét thay đổi ở /etc/pacman.conf.pacnew"
+
+#. Notification Body Part 3
+#: antergos-notify.sh:33
+msgid "and then update your pacman.conf accordingly."
+msgstr "và sau đó cập nhật pacman.conf cho phù hợp."
+
+#. Notification Body Part 4
+#: antergos-notify.sh:36
+msgid "For more information see:"
+msgstr "Thông tin xem thêm: "
+
+#. Notification Subject
+#: antergos-notify.sh:39
+msgid "\"ATTENTION: Antergos System Message\""
+msgstr "\"CHÚ Ý: Tin nhắn Hệ thống Antergos\""

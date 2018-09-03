@@ -1,0 +1,41 @@
+# 
+# Translators:
+# 박정규(Jung-Kyu Park) <bagjunggyu@gmail.com>, 2016
+msgid ""
+msgstr ""
+"Project-Id-Version: Antergos\n"
+"Report-Msgid-Bugs-To: Antergos Developers <dev@antergos.com>\n"
+"POT-Creation-Date: 2016-05-30 13:10-0500\n"
+"PO-Revision-Date: 2017-09-22 23:48+0000\n"
+"Last-Translator: 박정규(Jung-Kyu Park) <bagjunggyu@gmail.com>\n"
+"Language-Team: Korean (http://www.transifex.com/faidoc/antergos/language/ko/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ko\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Notification Body Part 1
+#: antergos-notify.sh:27
+msgid "The antergos repo priority has been updated."
+msgstr "antergos 저장소 우선순위가 업데이트되었습니다."
+
+#. Notification Body Part 2
+#: antergos-notify.sh:30
+msgid "You should review the change in /etc/pacman.conf.pacnew"
+msgstr "/etc/pacman.conf.pacnew 의 변경사항을 확인해야 합니다"
+
+#. Notification Body Part 3
+#: antergos-notify.sh:33
+msgid "and then update your pacman.conf accordingly."
+msgstr "그러고 나서 내용에 따라 pacman.conf을 업데이트하시면 됩니다."
+
+#. Notification Body Part 4
+#: antergos-notify.sh:36
+msgid "For more information see:"
+msgstr "더 많은 정보는 이곳에서 살펴보세요:"
+
+#. Notification Subject
+#: antergos-notify.sh:39
+msgid "\"ATTENTION: Antergos System Message\""
+msgstr "\"알림: Antergos 시스템 메시지입니다\""

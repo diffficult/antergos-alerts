@@ -17,9 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with antergos-notify; if not, see <http://www.gnu.org/licenses/>.
 
-#_view_message="$(python -c "import html;print(html.escape(\"${_part3}\"))")"
-#_view_message_link="<a href=\"https://antergos.com/wiki/alerts${_alert}\">${_view_message}</a>"
-_msg="${ALERT_MESSAGE}:\n\n${ALERT_URL}\n"
+_msg="${ALERT_MESSAGE}:\n"
+
+[[ -n "${ALERT_URL}" ]] && _msg="${_msg}\n${ALERT_URL}\n"
 
 
 maybe_display_desktop_alert() {

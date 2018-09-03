@@ -1,0 +1,10 @@
+[main]
+host = https://www.transifex.com
+
+[antergos.antergos_notifypot]
+file_filter = po/<lang>.po
+minimum_perc = 50
+source_file = po/ANTERGOS_NOTIFY.pot
+source_lang = en
+type = PO
+
