@@ -20,7 +20,7 @@
 _msg="${ALERT_MESSAGE}"
 
 if [[ -n "${ALERT_URL}" ]]; then
-	_msg="${_msg}:\n${ALERT_URL}"
+	_msg="${_msg}:\n\n${ALERT_URL}"
 fi
 
 
