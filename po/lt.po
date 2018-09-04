@@ -1,41 +1,52 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
 # 
 # Translators:
-# Moo, 2016-2017
+# Moo, 2016-2018
 msgid ""
 msgstr ""
 "Project-Id-Version: Antergos\n"
-"Report-Msgid-Bugs-To: Antergos Developers <dev@antergos.com>\n"
-"POT-Creation-Date: 2016-05-30 13:10-0500\n"
-"PO-Revision-Date: 2017-09-22 23:48+0000\n"
+"POT-Creation-Date: 2018-09-03 02:14-0500\n"
+"PO-Revision-Date: 2018-09-03 09:26+0000\n"
 "Last-Translator: Moo\n"
 "Language-Team: Lithuanian (http://www.transifex.com/faidoc/antergos/language/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
 "Language: lt\n"
 "Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
+"X-Generator: Poedit 2.1.1\n"
+"X-Poedit-Basepath: ../src\n"
+"X-Poedit-KeywordsList: _\n"
+"X-Poedit-SearchPath-0: antergos-alerts.py\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
-#. Notification Body Part 1
-#: antergos-notify.sh:27
-msgid "The antergos repo priority has been updated."
-msgstr "Antergos saugyklos pirmenybė buvo atnaujinta."
+#: antergos-alerts.py:102
+msgid "ATTENTION: Antergos System Message"
+msgstr "DĖMĖSIO: Antergos sistemos pranešimas"
 
-#. Notification Body Part 2
-#: antergos-notify.sh:30
-msgid "You should review the change in /etc/pacman.conf.pacnew"
-msgstr "Jūs turėtumėte peržvelgti pakeitimą faile /etc/pacman.conf.pacnew"
+#: antergos-alerts.py:104
+msgid "A new Antergos Alert has been issued."
+msgstr "Buvo išleistas naujas Antergos įspėjimas."
 
-#. Notification Body Part 3
-#: antergos-notify.sh:33
-msgid "and then update your pacman.conf accordingly."
-msgstr "ir tuomet atitinkamai atnaujinti savo pacman.conf failą."
+#: antergos-alerts.py:105
+msgid "Alerts contain important information regarding your system."
+msgstr "Įspėjime yra svarbi su jūsų sistema susijusi informacija."
 
-#. Notification Body Part 4
-#: antergos-notify.sh:36
-msgid "For more information see:"
-msgstr "Išsamesnei informacijai, žiūrėkite:"
+#: antergos-alerts.py:106
+msgid "You can view the alert at the following URL"
+msgstr "Galite peržiūrėti įspėjimą šiuo URL adresu"
 
-#. Notification Subject
-#: antergos-notify.sh:39
-msgid "\"ATTENTION: Antergos System Message\""
-msgstr "\"DĖMESIO: Antergos sistemos pranešimas\""
+#: antergos-alerts.py:121
+msgid "At least one core system package has been updated."
+msgstr "Buvo atnaujintas bent vienas pagrindinis sistemos paketas."
+
+#: antergos-alerts.py:122
+msgid "To ensure system stability, a reboot is recommended."
+msgstr "Norint užtikrinti sistemos stabilumą, rekomenduojama paleisti kompiuterį iš naujo."
+
+#: antergos-alerts.py:211
+msgid ""
+"root privileges are needed to store which alerts have already been shown"
+msgstr "Norint saugoti informaciją apie tai, kurie įspėjimai jau buvo rodomi, reikalingos supernaudotojo teisės"

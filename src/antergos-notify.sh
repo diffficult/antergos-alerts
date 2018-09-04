@@ -17,9 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with antergos-notify; if not, see <http://www.gnu.org/licenses/>.
 
-_msg="${ALERT_MESSAGE}:\n"
+_msg="${ALERT_MESSAGE}"
 
-[[ -n "${ALERT_URL}" ]] && _msg="${_msg}\n${ALERT_URL}\n"
+if [[ -n "${ALERT_URL}" ]]; then
+	_msg="${_msg}:\n${ALERT_URL}"
+fi
 
 
 maybe_display_desktop_alert() {

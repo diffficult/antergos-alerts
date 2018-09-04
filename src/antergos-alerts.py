@@ -47,9 +47,12 @@ class AntergosAlerts(object):
 
     def __init__(self):
         """ Initialization """
+        if not self.IS_GRAPHICAL_SESSION and 'pamac (Linux x86_64)' in os.environ.values():
+            AntergosAlerts.IS_GRAPHICAL_SESSION = True
+            os.environ['USER'] = 'root'
+
         try:
-            result = subprocess.run(
-                ['uname', '-m'], universal_newlines=True, stdout=subprocess.PIPE)
+            result = subprocess.run(['uname', '-m'], universal_newlines=True, stdout=subprocess.PIPE)
             self.is_32bit = 'x86_64' not in result.stdout
         except (OSError, subprocess.CalledProcessError) as _err:
             self.is_32bit = False
