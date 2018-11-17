@@ -35,11 +35,10 @@ maybe_display_desktop_alert() {
 	_addr='DBUS_SESSION_BUS_ADDRESS'
 
 	_processes=($(ps aux | grep '[d]bus-daemon --session' | awk '{print $2}' | xargs))
-	_users=($(ps aux | grep '[d]bus-daemon --session' | awk '{print $1}' | xargs))
 
 	for _i in $(seq 1 ${#_processes[@]}); do
 		_pid="${_processes[(_i - 1)]}"
-		_user="${_users[(_i - 1)]}"
+		_user=$(ps axo user:32,pid | grep "${_processes[(_i - 1)]}" | awk '{print $1}' | xargs)
 		_dbus="$(grep -z ${_addr} /proc/${_pid}/environ 2>/dev/null | tr '\0' '\n' | sed -e s/${_addr}=//)"
 
 		[[ -z "${_dbus}" ]] && continue
