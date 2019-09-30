@@ -1,4 +1,4 @@
-#!/bin/make -f
+/bin/make -f
 
 DESTDIR ?= /
 
@@ -15,7 +15,7 @@ install:
 
 	# Logo for desktop notification
 	mkdir -p $(DESTDIR)/usr/share/antergos
-	cp dist/logo-square32.png $(DESTDIR)/usr/share/antergos/new-logo-square32.png
+	cp dist/onosendai.png $(DESTDIR)/usr/share/icons/onosendai.png
 
 	# Antergos Alerts
 	install -Dm755 src/antergos-alerts.py $(DESTDIR)/usr/bin/antergos-alerts
@@ -31,7 +31,7 @@ uninstall:
 	rm -f $(DESTDIR)/usr/share/libalpm/hooks/antergos-alerts.hook
 
 	# Logo for desktop notification
-	rm -f $(DESTDIR)/usr/share/antergos/logo-square32.png
+	rm -f $(DESTDIR)/usr/share/icons/onosendai.png
 
 	# Antergos Alerts
 	rm -f $(DESTDIR)/usr/bin/antergos-alerts

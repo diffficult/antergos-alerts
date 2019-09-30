@@ -102,9 +102,9 @@ class AntergosAlerts(object):
         except NameError:
             _ = lambda message: message
 
-        subject = _('ATTENTION: Antergos System Message')
+        subject = _('ACHTUNG! ONO SENDAI Terminal Message')
 
-        part1 = _('A new Antergos Alert has been issued.')
+        part1 = _('A new Alert has been issued.')
         part2 = _('Alerts contain important information regarding your system.')
         part3 = _('You can view the alert at the following URL')
 

@@ -30,7 +30,7 @@ maybe_display_desktop_alert() {
 		return
 	fi
 
-	_icon='/usr/share/antergos/new-logo-square32.png'
+	_icon='/usr/share/icons/onosendai.png'
 	_command="/usr/bin/notify-send -u critical -a Antergos -i ${_icon} \"${ALERT_SUBJECT}\" \"${_msg}\""
 	_addr='DBUS_SESSION_BUS_ADDRESS'
 
