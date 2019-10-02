@@ -1,4 +1,4 @@
-/bin/make -f
+#!/bin/make -f
 
 DESTDIR ?= /
 
@@ -14,7 +14,7 @@ install:
 	cp dist/antergos-alerts.hook $(DESTDIR)/usr/share/libalpm/hooks/antergos-alerts.hook
 
 	# Logo for desktop notification
-	mkdir -p $(DESTDIR)/usr/share/antergos
+	mkdir -p $(DESTDIR)/usr/share/icons
 	cp dist/onosendai.png $(DESTDIR)/usr/share/icons/onosendai.png
 
 	# Antergos Alerts
