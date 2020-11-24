@@ -1,28 +1,14 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
 #
-# antergos-alerts.py
+# pacman-alerts.py
 #
-# Copyright © 2017-2018 Antergos
 #
-# antergos-alerts.py is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
+# pacman-notify is (fork) modified version of Antergos-alerts free software
 #
-# antergos-alerts.py is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# The following additional terms are in effect as per Section 7 of the license:
-#
-# The preservation of all legal notices and author attributions in
-# the material or in the Appropriate Legal Notices displayed
-# by works containing it is required.
-#
-# You should have received a copy of the GNU General Public License
-# along with antergos-alerts.py; if not, see <http://www.gnu.org/licenses/>.
+# pacman-notify is for personal use and poorly modified and should not be redistributed
+# 
+# Check on the original antergos-alerts at https://github.com/Antergos/antergos-alerts
 
 import json
 import os
@@ -32,8 +18,8 @@ import locale
 from termcolor import colored, cprint
 
 
-class AntergosAlerts(object):
-    """ Manages antergos alerts """
+class PacmanAlerts(object):
+    """ Manages pacman alerts """
     APP_NAME = 'ANTERGOS_NOTIFY'
     LOCALE_DIR = '/usr/share/locale'
 
@@ -41,14 +27,14 @@ class AntergosAlerts(object):
     IS_GRAPHICAL_SESSION = os.environ.get('DISPLAY', False)
     HAS_GRAPHICAL_SESSION = os.path.exists('/usr/bin/X')
 
-    ALERTS_DIR = '/var/lib/antergos-alerts'
-    ALERTS_JSON = '/var/lib/antergos-alerts/alerts.json'
-    COMPLETED_JSON = '/var/lib/antergos-alerts/completed.json'
+    ALERTS_DIR = '/var/lib/pacman-alerts'
+    ALERTS_JSON = '/var/lib/pacman-alerts/alerts.json'
+    COMPLETED_JSON = '/var/lib/pacman-alerts/completed.json'
 
     def __init__(self):
         """ Initialization """
         if not self.IS_GRAPHICAL_SESSION and 'pamac (Linux x86_64)' in os.environ.values():
-            AntergosAlerts.IS_GRAPHICAL_SESSION = True
+            PacmanAlerts.IS_GRAPHICAL_SESSION = True
             os.environ['USER'] = 'root'
 
         try:
@@ -58,13 +44,13 @@ class AntergosAlerts(object):
             self.is_32bit = False
 
         try:
-            with open(AntergosAlerts.ALERTS_JSON) as data:
+            with open(PacmanAlerts.ALERTS_JSON) as data:
                 self.alerts = json.loads(data.read())
         except (OSError, json.JSONDecodeError):
             self.alerts = {}
 
         try:
-            with open(AntergosAlerts.COMPLETED_JSON) as data:
+            with open(PacmanAlerts.COMPLETED_JSON) as data:
                 self.completed_alert_ids = json.loads(data.read())
         except (OSError, json.JSONDecodeError):
             self.completed_alert_ids = []
@@ -85,11 +71,11 @@ class AntergosAlerts(object):
     def setup_gettext()-> None:
         """ Initialize gettext for string translations """
         try:
-            gettext.textdomain(AntergosAlerts.APP_NAME)
-            gettext.bindtextdomain(AntergosAlerts.APP_NAME, AntergosAlerts.LOCALE_DIR)
+            gettext.textdomain(PacmanAlerts.APP_NAME)
+            gettext.bindtextdomain(PacmanAlerts.APP_NAME, PacmanAlerts.LOCALE_DIR)
 
             locale_code, _encoding = locale.getdefaultlocale()
-            lang = gettext.translation(AntergosAlerts.APP_NAME, AntergosAlerts.LOCALE_DIR, [locale_code], None, True)
+            lang = gettext.translation(PacmanAlerts.APP_NAME, PacmanAlerts.LOCALE_DIR, [locale_code], None, True)
             lang.install()
         except Exception:
             pass
@@ -139,7 +125,7 @@ class AntergosAlerts(object):
 
         # Display desktop notification.
         try:
-            subprocess.run(['/usr/bin/antergos-notify'], env=environment, check=True)
+            subprocess.run(['/usr/bin/pacman-notify'], env=environment, check=True)
         except subprocess.CalledProcessError:
             pass
 
@@ -160,7 +146,7 @@ class AntergosAlerts(object):
         print(f'{prefix} {part2}')
         print(f'{prefix} {part3}:')
         print('')
-        print(f'{prefix} https://antergos.com/wiki/alerts/{alert_slug}')
+        print(f'{prefix} https://pacman.com/wiki/alerts/{alert_slug}')
         print('')
         cprint(
             '                                                                 ',
@@ -185,7 +171,7 @@ class AntergosAlerts(object):
         for alert_id in alerts_ids:
             alert_slug = self.alerts[alert_id]
 
-            if AntergosAlerts.DOING_INSTALL:
+            if PacmanAlerts.DOING_INSTALL:
                 self.completed_alert_ids.append(alert_id)
                 continue
 
@@ -195,11 +181,11 @@ class AntergosAlerts(object):
 
             self.print_notice_to_stdout(alert_slug)
 
-            if AntergosAlerts.IS_GRAPHICAL_SESSION:
+            if PacmanAlerts.IS_GRAPHICAL_SESSION:
                 # Display desktop notification.
-                environment['ALERT_URL'] = f'https://antergos.com/wiki/alerts/{alert_slug}'
+                environment['ALERT_URL'] = f'https://wiki.archlinux.org/index.php?search={alert_slug}'
                 try:
-                    subprocess.run(['/usr/bin/antergos-notify'], env=environment, check=True)
+                    subprocess.run(['/usr/bin/pacman-notify'], env=environment, check=True)
                 except subprocess.CalledProcessError:
                     pass
 
@@ -208,11 +194,11 @@ class AntergosAlerts(object):
     def save_completed_alerts(self):
         """ Store already shown alerts """
         try:
-            with open(AntergosAlerts.COMPLETED_JSON, 'w') as json_data:
+            with open(PacmanAlerts.COMPLETED_JSON, 'w') as json_data:
                 json_data.write(json.dumps(self.completed_alert_ids))
         except PermissionError as _err:
             print(_("root privileges are needed to store which alerts have already been shown"))
 
 
 if __name__ == '__main__':
-    AntergosAlerts().run()
+    PacmanAlerts().run()

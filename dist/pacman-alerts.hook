@@ -2,14 +2,14 @@
 Operation = Install
 Operation = Upgrade
 Type = File
-Target = var/lib/antergos-alerts/alerts.json
+Target = var/lib/pacman-alerts/alerts.json
 
 [Action]
-Description = Checking for new antergos alerts.
+Description = Checking for new pacman alerts.
 When = PostTransaction
-Depends = antergos-alerts
+Depends = pacman-alerts
 Depends = python
 Depends = gettext
 Depends = libnotify
 Depends = python-termcolor
-Exec = /usr/bin/antergos-alerts
+Exec = /usr/bin/pacman-alerts
